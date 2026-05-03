@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KING LABS 3D 👑 | Transformando ideias em objetos reais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset e variáveis da paleta Noir Futurista */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --purple-neon: #b829f0;
+            --cyan-neon: #00f5ff;
+            --magenta-neon: #ff00ff;
+            --purple-glow: rgba(184, 41, 240, 0.3);
+            --cyan-glow: rgba(0, 245, 255, 0.2);
+        }
+
+        body {
+            background: var(--black);
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas de partículas de fundo - efeito magnético */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        /* Scanline animado - varredura horizontal (tem que subir e descer) */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--purple-neon), transparent);
+            box-shadow: 0 0 10px var(--purple-neon);
+            animation: scan 8s infinite linear;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Header com logo animado :D */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.3);
+            z-index: 1000;
+            border-bottom: 1px solid var(--purple-glow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-image {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            animation: neonPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes neonPulse {
+            0% { filter: drop-shadow(0 0 5px var(--purple-neon)); }
+            100% { filter: drop-shadow(0 0 20px var(--purple-neon)) drop-shadow(0 0 30px var(--purple-neon)); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--purple-neon), var(--cyan-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--purple-neon);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: var(--purple-neon);
+        }
+
+        /* Hero Section - Neon maluco */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .hero h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--purple-neon), var(--cyan-neon), var(--magenta-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glitch 5s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            5% { transform: translate(-2px, 2px); }
+            15% { transform: translate(2px, -2px); }
+            25% { transform: translate(-2px, 0); }
+            35% { transform: translate(2px, 2px); }
+            45% { transform: translate(-2px, -2px); }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .cta-primary {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: linear-gradient(45deg, var(--purple-neon), var(--cyan-neon));
+            color: var(--black);
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-radius: 0;
+            box-shadow: 0 0 30px var(--purple-glow);
+            animation: ctaPulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-primary:hover::before {
+            left: 100%;
+        }
+
+        @keyframes ctaPulse {
+            0%, 100% { box-shadow: 0 0 30px var(--purple-glow); }
+            50% { box-shadow: 0 0 50px var(--purple-neon); }
+        }
+
+        /* Grid fluido para a vitrine de produtos - linhas de grade roxas */
+        #vitrine {
+            padding: 10rem 5% 5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .vitrine-title {
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            background: linear-gradient(45deg, var(--cyan-neon), var(--purple-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            position: relative;
+        }
+
+        /* Grid lines sutis */
+        .products-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(var(--purple-glow) 1px, transparent 1px),
+                linear-gradient(90deg, var(--purple-glow) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--purple-glow);
+            padding: 2rem;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--purple-neon), var(--cyan-neon), var(--magenta-neon));
+        }
+
+        .product-image {
+            width: 14.1rem;
+            height: 14.1rem;
+
+            border-radius: 2rem;
+        }
+
+        .product-visual {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border: 1px solid var(--cyan-glow);
+        }
+
+        /* Lembrar de colocar foto dos produto */
+        .coc-control {
+            background: linear-gradient(45deg, var(--purple-neon), var(--cyan-neon));
+            clip-path: polygon(20% 0%, 80% 0%, 100% 30%, 100% 70%, 80% 100%, 20% 100%, 0% 70%, 0% 30%);
+        }
+
+        .headset-stand {
+            stroke: var(--cyan-neon);
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .snoopy-silhouette {
+            fill: var(--purple-neon);
+            stroke: var(--magenta-neon);
+            stroke-width: 2;
+        }
+
+        .batman-smile {
+            fill: var(--magenta-neon);
+            filter: drop-shadow(0 0 10px var(--magenta-neon));
+        }
+
+        .deadpool-gun {
+            stroke: var(--cyan-neon);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .product-card h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--purple-neon);
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            color: var(--cyan-neon);
+            font-weight: 700;
+            animation: pricePulse 2s infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes pricePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        .cta-secondary {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            color: var(--purple-neon);
+            text-decoration: none;
+            border: 2px solid var(--purple-neon);
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-secondary:hover {
+            background: var(--purple-neon);
+            color: var(--black);
+            box-shadow: 0 0 20px var(--purple-glow);
+        }
+
+        /* Banner de aviso de entrega */
+        .delivery-banner {
+            background: linear-gradient(90deg, rgba(184,41,240,0.2), rgba(0,245,255,0.1));
+            border: 1px solid var(--purple-glow);
+            padding: 2rem;
+            text-align: center;
+            margin: 5rem 5%;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .delivery-banner::before {
+            content: '🌎';
+            position: absolute;
+            font-size: 2rem;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+        }
+
+        .delivery-banner > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--purple-glow);
+            margin-top: 5rem;
+        }
+
+        .dev-credit {
+            margin-top: 2rem;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 3%;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .vitrine-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas para partículas magnéticas -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- Scanline animado -->
+    <div class="scanline"></div>
+
+    <header>
+        <div class="logo-container">
+            <img class="logo-image" src="./image/WhatsApp Image 2026-05-03 at 15.13.40.jpeg" alt="logo kinglabs">
+            <h1>KING LABS 3D</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#vitrine">Criações</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <h2>Transformando Ideias em Objetos Reais</h2>
+        <p>Design nobre, produção artesanal sob demanda. PLA Premium com precisão dígna de realiza.</p>
+        <a href="https://www.instagram.com/king.labs3d" class="cta-primary" target="_blank">Garantir o Meu</a>
+    </section>
+
+    <!-- Vitrine de Criações -->
+    <section id="vitrine">
+        <h2 class="vitrine-title">VITRINE DE CRIAÇÕES</h2>
+        <div class="products-grid">
+            <!-- Suporte de Controle -->
+            <article class="product-card">
+                <img class="product-image" src="./image/sup_controle_coc.jpg" alt="suporte_controle_coc">
+                <h3>Sup de Controle</h3>
+                <div class="product-price">Orçamento via DM</div>
+                <a href="https://www.instagram.com/king.labs3d" class="cta-secondary" target="_blank">Peça via DM</a>
+            </article>
+
+            <!-- Suporte de Headset -->
+            <article class="product-card">
+                <img class="product-image" src="./image/sup_headset.jpg" alt="suporte_headset">
+                <h3>Suporte de Headset</h3>
+                <div class="product-price">Valor sob consulta</div>
+                <a href="https://www.instagram.com/king.labs3d" class="cta-secondary" target="_blank">Peça via DM</a>
+            </article>
+
+            <!-- Snoopy -->
+            <article class="product-card">
+                <img class="product-image" src="./image/snoopy.jpg" alt="snoopy">
+                <h3>Snoopy</h3>
+                <div class="product-price">Peça o seu agora</div>
+                <a href="https://www.instagram.com/king.labs3d" class="cta-secondary" target="_blank">Peça via DM</a>
+            </article>
+
+            <!-- Batman Que Ri -->
+            <article class="product-card">
+                <img class="product-image" src="./image/batman_que_ri.jpg" alt="batman_que_ri">
+                <h3>Batman Que Ri</h3>
+                <div class="product-price">Orçamento personalizado</div>
+                <a href="https://www.instagram.com/king.labs3d" class="cta-secondary" target="_blank">Peça via DM</a>
+            </article>
+
+            <!-- Pistola Deadpool -->
+            <article class="product-card">
+                <img class="product-image" src="./image/pistola_deadpool.jpg" alt="pistola_deadpool">
+                <h3>Pistola Deadpool</h3>
+                <div class="product-price">Exclusivo sob encomenda</div>
+                <a href="https://www.instagram.com/king.labs3d" class="cta-secondary" target="_blank">Peça via DM</a>
+            </article>
+
+            <!-- Copo Monster -->
+            <article class="product-card">
+                <img class="product-image" src="./image/copo_monster.jpg" alt="copo-monster">
+                <h3>Pistola Deadpool</h3>
+                <div class="product-price">Produto personalizado</div>
+                <a href="https://www.instagram.com/king.labs3d" class="cta-secondary" target="_blank">Peça via DM</a>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Banner de Aviso de Entrega -->
+    <div class="delivery-banner" id="sobre">
+        <h3>🚨 AVISO DE SISTEMA</h3>
+        <p>Criações sob encomenda. No momento, entregas apenas em <strong>Macapá.</strong></p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 KING LABS 3D 👑. Todos os direitos reservados.</p>
+        <p><a href="https://www.instagram.com/king.labs3d" target="_blank">Siga no Instagram</a></p>
+        <div class="dev-credit">
+            Desenvolvido por <a href="https://www.instagram.com/kev_lpss">@kev_lpss</a>
+        </div>
+    </footer>
+
+    <script>
+        // Sistema de partículas magnéticas - reage ao mouse - buscar saber****
+        class ParticleSystem {
+            constructor() {
+                this.canvas = document.getElementById('particle-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resize();
+                this.particles = [];
+                this.mouse = { x: 0, y: 0 };
+                this.init();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            init() {
+                // Cria 80 partículas
+                for (let i = 0; i < 80; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: Math.random() * 2 + 1
+                    });
+                }
+                this.animate();
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Repulsão magnética do mouse
+                this.particles.forEach(p => {
+                    const dx = this.mouse.x - p.x;
+                    const dy = this.mouse.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 100) {
+                        const force = (100 - dist) / 100;
+                        p.vx -= (dx / dist) * force * 0.5;
+                        p.vy -= (dy / dist) * force * 0.5;
+                    }
+
+                    // Movimento orgânico
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    
+                    // Bounce nas bordas
+                    if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+
+                    // Desenho da partícula
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(184, 41, 240, ${0.3 + Math.sin(Date.now() * 0.001 + p.x) * 0.2})`;
+                    this.ctx.fill();
+                });
+
+                // Conexões entre partículas próximas
+                for (let i = 0; i < this.particles.length; i++) {
+                    for (let j = i + 1; j < this.particles.length; j++) {
+                        const dx = this.particles[i].x - this.particles[j].x;
+                        const dy = this.particles[i].y - this.particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 100) {
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+                            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+                            this.ctx.strokeStyle = `rgba(184, 41, 240, ${1 - dist / 100})`;
+                            this.ctx.lineWidth = 1;
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Inicialização
+        const particles = new ParticleSystem();
+
+        // Mouse tracking
+        document.addEventListener('mousemove', (e) => {
+            particles.mouse.x = e.clientX;
+            particles.mouse.y = e.clientY;
+        });
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            particles.resize();
+        });
+
+        // Smooth scroll para links de navegação
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Scanline múltiplas instâncias aleatórias
+        setInterval(() => {
+            const scanline = document.querySelector('.scanline');
+            scanline.style.animation = 'none';
+            setTimeout(() => {
+                scanline.style.animation = 'scan 8s infinite linear';
+            }, 10);
+        }, 12000 + Math.random() * 8000);
+    </script>
+</body>
+</html>
